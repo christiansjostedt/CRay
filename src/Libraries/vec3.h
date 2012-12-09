@@ -89,6 +89,10 @@ const vec3 operator- (const vec3 &vec) const
 const vec3 operator+ (const vec3 &vec) const
 { return vec3 (x+vec.x, y+vec.y, z+vec.z); }
 
+/*! Returns a Dot product between 2 vectors(returns scalar) */
+double operator* (vec3 v2)
+{ return x*v2.x + y*v2.y + z*v2.z; }
+
 
 /*! Returns the vector scaled by \a fact. */
 const vec3 operator* (double fact) const
