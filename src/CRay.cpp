@@ -8,12 +8,12 @@
 #include <iostream>
 #include <time.h>
 #include <math.h>
-#include "Libraries/vec3.h"
-#include "Libraries/Ray.h"
-#include "Cameras/Camera.h"
-#include "Magick++.h"
 #include <string>
 #include <sstream>
+#include "Magick++.h"
+#include "Geometry/CRayGeo.h"
+#include "Libraries/CRayLibs.h"
+#include "Cameras/Camera.h"
 
 using namespace std;
 using namespace Magick;
@@ -28,7 +28,7 @@ void UVColorTest(Image &image, int x,int y)
 
 
 
-void ComputeCameraRay(Ray &ray, Camera &cam, int x, int y) {
+Ray ComputeCameraRay(Ray &ray, Camera &cam, int x, int y) {
   const float width = cam.getImgResX();  // pixels across
   const float height = cam.getImgResY();  // pixels high
 
@@ -56,7 +56,9 @@ void ComputeCameraRay(Ray &ray, Camera &cam, int x, int y) {
   	r = r + cam.getPosition();
   	cout <<"RayThroughPixel " << r<<endl;
 
-  	ray = Ray(r.x,r.y,r.z);
+  	//ray = Ray(r.x,r.y,r.z);
+
+  	return Ray(cam.getPosition(), r);
   	//cout << "image_Point+moveVector:" << image_point+vec3(-0.25,0.25,0)<<endl;
   	//------------------------------------------------------------------------------------------
 }
@@ -129,8 +131,8 @@ int main(int argc,char **argv)
 	for(int xPixel=0;xPixel<ImgResX;xPixel++){
 		for(int yPixel=0;yPixel<ImgResY;yPixel++)
 		{
-			Ray ray;
-			ComputeCameraRay(ray, cam, xPixel, yPixel);
+
+			Ray ray = ComputeCameraRay(ray, cam, xPixel, yPixel);
 			//RayThroughPixel( ray, cam, ImgResX, ImgResY, xPixel, yPixel );
 
 			//Intersection hit=Intersect(ray,scene);

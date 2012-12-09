@@ -1,6 +1,4 @@
-src/CRay.d src/CRay.o: ../src/CRay.cpp ../src/Libraries/vec3.h \
-  ../src/Libraries/Ray.h ../src/Libraries/vec3.h ../src/Cameras/Camera.h \
-  ../src/Cameras/../Libraries/vec3.h \
+src/CRay.d src/CRay.o: ../src/CRay.cpp \
   /opt/local/include/ImageMagick/Magick++.h \
   /opt/local/include/ImageMagick/Magick++/Include.h \
   /opt/local/include/ImageMagick/magick/magick-config.h \
@@ -129,17 +127,11 @@ src/CRay.d src/CRay.o: ../src/CRay.cpp ../src/Libraries/vec3.h \
   /opt/local/include/ImageMagick/Magick++/Pixels.h \
   /opt/local/include/ImageMagick/Magick++/STL.h \
   /opt/local/include/ImageMagick/Magick++/CoderInfo.h \
-  /opt/local/include/ImageMagick/Magick++/Montage.h
-
-../src/Libraries/vec3.h:
-
-../src/Libraries/Ray.h:
-
-../src/Libraries/vec3.h:
-
-../src/Cameras/Camera.h:
-
-../src/Cameras/../Libraries/vec3.h:
+  /opt/local/include/ImageMagick/Magick++/Montage.h \
+  ../src/Geometry/CRayGeo.h ../src/Geometry/Sphere.h \
+  ../src/Geometry/../Libraries/vec3.h ../src/Libraries/CRayLibs.h \
+  ../src/Libraries/vec3.h ../src/Libraries/Ray.h ../src/Cameras/Camera.h \
+  ../src/Cameras/../Libraries/vec3.h
 
 /opt/local/include/ImageMagick/Magick++.h:
 
@@ -398,3 +390,19 @@ src/CRay.d src/CRay.o: ../src/CRay.cpp ../src/Libraries/vec3.h \
 /opt/local/include/ImageMagick/Magick++/CoderInfo.h:
 
 /opt/local/include/ImageMagick/Magick++/Montage.h:
+
+../src/Geometry/CRayGeo.h:
+
+../src/Geometry/Sphere.h:
+
+../src/Geometry/../Libraries/vec3.h:
+
+../src/Libraries/CRayLibs.h:
+
+../src/Libraries/vec3.h:
+
+../src/Libraries/Ray.h:
+
+../src/Cameras/Camera.h:
+
+../src/Cameras/../Libraries/vec3.h:
