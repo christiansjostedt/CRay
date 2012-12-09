@@ -59,8 +59,11 @@ z = z_;
 void Normalize ()
 {
 using namespace std;
-double l = 1.0/sqrt (x*x + y*y + z*z);
-x*=l; y*=l; z*=l;
+	if ((x+y+z)!=0)
+		{
+		double l = 1.0/sqrt (x*x + y*y + z*z);
+		x*=l; y*=l; z*=l;
+		}
 }
 
 /*! Returns the length of the vector. */
@@ -99,17 +102,24 @@ const vec3 operator/ (double fact) const
 /*! Scales the vector by \a fact. */
 vec3 &operator*= (double fact)
 { x*=fact; y*=fact; z*=fact; return *this; }
+
+double dotprod(const vec3 &v1, const vec3 &v2)
+{ return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z; }
+
+vec3 crossprod(const vec3 &a, const vec3 &b)
+{ return vec3 (a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x); }
+
 };
 
 
 
 /*! Returns the dot product of \a v1 and \a v2.*/
-inline double dotprod(const vec3 &v1, const vec3 &v2)
-{ return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z; }
+//inline double dotprod(const vec3 &v1, const vec3 &v2)
+//{ return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z; }
 
 /*! Returns the cross product of \a a and \a b.*/
-inline vec3 crossprod(const vec3 &a, const vec3 &b)
-{ return vec3 (a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x); }
+//inline vec3 crossprod(const vec3 &a, const vec3 &b)
+//{ return vec3 (a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x); }
 
 /*! Writes \a v to \a os.*/
 inline std::ostream &operator<< (std::ostream &os, const vec3 &v)

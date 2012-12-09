@@ -7,6 +7,7 @@
 //============================================================================
 #include <iostream>
 #include <time.h>
+#include <math.h>
 #include "Libraries/vec3.h"
 #include "Libraries/Ray.h"
 #include "Cameras/Camera.h"
@@ -25,46 +26,83 @@ void UVColorTest(Image &image, int x,int y)
 	//cout<<"x:"<<x<<"  y: "<<y<<"  Color:("<<newX/MaxRGB<<","<<newY/MaxRGB<<","<<0/MaxRGB<<","<<1/MaxRGB<<")"<<endl;
 }
 
-void rayThroughPixel(Camera &cam, int x, int y)
+
+
+void ComputeCameraRay(Ray &ray, Camera &cam, int x, int y) {
+  const float width = cam.getImgResX();  // pixels across
+  const float height = cam.getImgResY();  // pixels high
+
+	vec3 rightVector = cam.getRightVector();
+	vec3 up = cam.getUp();
+	vec3 view_direction = cam.getViewDirection();
+	vec3 camera_position = cam.getPosition();
+	vec3 r;
+
+  double normalized_i = (1-x / width) - 0.5;
+  double normalized_j = (1-y / height)- 0.5;
+  vec3 image_point = rightVector*normalized_i +
+		  	  	  	  	  up*normalized_j + camera_position +view_direction;
+  r = image_point + camera_position;
+
+  	cout << endl<<"_______________________________"<<endl<<"_______________________________"<<endl;
+  	//cout<<cam.setFov(30);
+  	cout<<"X:"<<x<<" Y:"<<y<<endl;
+  	//cout<<"alpha:"<<alpha<<" beta:"<<beta<<endl;
+  	cout<<"rightVector:"<< rightVector;
+  	cout<<"upVector:"<< up;
+  	cout<<"view_direction:"<<view_direction;
+  	cout<<"Camera position:"<<camera_position;
+ 	cout << "image_Point:" << image_point<<endl;
+  	r = r + cam.getPosition();
+  	cout <<"RayThroughPixel " << r<<endl;
+
+  	ray = Ray(r.x,r.y,r.z);
+  	//cout << "image_Point+moveVector:" << image_point+vec3(-0.25,0.25,0)<<endl;
+  	//------------------------------------------------------------------------------------------
+}
+
+
+void RayThroughPixel(Ray &ray, Camera &cam, int xRes, int yRes, int x, int y)
 {
-	/*Create a Coordinate frame
-	vec3 w;
-	vec3 a;
-	vec3 b;
-	vec3 u;
-	vec3 v;
 
-	a = eyePosition - centerPos;
-	b = upVector
+	//1 - cos(x)/sin(x)] = tan(x/2)
+	//float fov = cam.getFov();
+	float alpha = tan( (0.5*xRes-(x*0.5*xRes))/2) * ((x-xRes/2)/(xRes/2));
+	float beta =  tan( (0.5*yRes-(y*0.5*yRes) )/2) * ((yRes/2)-y)/(yRes/2);
 
-	w = a.normailize()
-	u = (b X w).normalize()
-	v = w X u
+	//float alpha = tan((30*PI/180)/2) * ((x-xRes/2)/(xRes/2));
+	//float beta = cam.get_tan_fovY() * ((y-yRes/2)/(yRes/2));
 
+	vec3 rightVector = cam.getRightVector();
+	vec3 up = cam.getUp();
+	vec3 view_direction = cam.getViewDirection();
+	vec3 r;
+	r = rightVector * alpha + up*beta;
+	r = r -view_direction;
+	r.Normalize();
+	r = r+cam.getPosition();
 
-	Image Canvas will be at 1*-w or -w. 1 unit away from the camera in world-space coordniates
+	cout << endl<<"_______________________________"<<endl<<"_______________________________"<<endl;
+	//cout<<cam.setFov(30);
+	cout<<"X:"<<x<<" Y:"<<y<<endl;
+	cout<<"alpha:"<<alpha<<" beta:"<<beta<<endl;
+	cout<<"rightVector:"<< rightVector;
+	cout<<"upVector:"<< up;
+	cout<<"view_direction:"<<view_direction;
+	cout <<"Directional Vector R: " << r<<endl;
+	r = r + cam.getPosition();
+	cout <<"RayThroughPixel " << r<<endl;
+	//------------------------------------------------------------------------------------------
 
-	alphaU = tan(fov*X / 2) * (( xPixel-(imageWidth/2)) / (imageWidth/2) )
-	alphaU = horizontal pixels
-
-	betaV = tan(fov*Y / 2) * ( ((imageHeight/2)-yPixel) / (imageHeight/2))
-	betaV = Vertical pixels
-
-	//Equation for a ray
-	ray = ( eye + (alphaU + betaV-W).normalize() )
-	ray = (origin + normalized direction)
-
-	Calculating intersection is:
-	ray = (origin + normalized direction)   * DistanceAlongRay
-	ray = ( eye + (alphaU + betaV-W).normalize() ) * DistanceAlongRay
-	*/
 }
 
 int main(int argc,char **argv)
 {
+
+
   //Initialization Vars:
-	int ImgResX = 80;
-	int ImgResY = 50;
+	int ImgResX = 10;
+	int ImgResY = 10;
 
 	//Canvas size string, Concactenating int and strings
 	ostringstream oss;
@@ -74,7 +112,7 @@ int main(int argc,char **argv)
 	//Write to this destination
 	string filename = "/Users/christiansjostedt/Desktop/CRay_render.png";
 
-	//Camera Cam;
+	Camera cam = Camera(vec3(0,0,0), vec3(0,0,10),vec3(0,1,0),ImgResX,ImgResY,90);
 	//Scene scene;
 
 	//Initialize DisplayDriver
@@ -85,18 +123,23 @@ int main(int argc,char **argv)
 	initTime=clock();
 
 	//Image Start
-	Image image(imgSize, "black");		//Create canvas
-	for(int x=0;x<ImgResX;x++){
-		for(int y=0;y<ImgResY;y++)
-		{
+	//Image image(imgSize, "black");		//Create canvas
 
-			//Ray ray = RayThruPixel(cam,x,y);
+
+	for(int xPixel=0;xPixel<ImgResX;xPixel++){
+		for(int yPixel=0;yPixel<ImgResY;yPixel++)
+		{
+			Ray ray;
+			ComputeCameraRay(ray, cam, xPixel, yPixel);
+			//RayThroughPixel( ray, cam, ImgResX, ImgResY, xPixel, yPixel );
+
 			//Intersection hit=Intersect(ray,scene);
 			//Image[x,y] = FindColor(hit);
 
-			UVColorTest(image, x, y);
+			//UVColorTest(image, x, y);
 		}
 	}
+
 
 
 
@@ -105,12 +148,9 @@ int main(int argc,char **argv)
 	cout << endl << "Rendertime: "<< (double)finalTime / ((double)CLOCKS_PER_SEC) << " Seconds"<< endl;
 
 	//Write to disk
-	image.write( filename );
-
-	Ray ray = Ray(0,0,0);
-	Ray gay = Ray(1,3,4);
-	cout << gay+ray;
-
+	//image.write( filename );
 
 	return 0;
 }
+
+
