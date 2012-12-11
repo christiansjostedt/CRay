@@ -40,7 +40,6 @@ int Camera::getImgResX(){return imgResX;}
 void Camera::setImgResY(int y){imgResY = y;}
 int Camera::getImgResY(){return imgResY;}
 
-float Camera::getFov(){return fov;}
 
 vec3 Camera::getRightVector(){return right_vector;}
 vec3 Camera::getViewDirection(){return view_direction;}
@@ -51,16 +50,16 @@ void Camera::recalc()
     up.Normalize();
 
     // calculate unit view direction vector
-    view_direction = pos-cent;
+    view_direction = cent-pos;
     view_direction.Normalize();
 
 
     // and the right hand view vector
-    right_vector=vec3().crossprod(up, view_direction);
+    right_vector=vec3().crossprod(view_direction,up);
     right_vector.Normalize();
 
     // and re-base the up vector (may not be normalised)
-    up=vec3().crossprod(view_direction, right_vector);
+    up=vec3().crossprod(right_vector, view_direction);
 }
 
 void Camera::setFov(double fovy)
@@ -75,8 +74,6 @@ void Camera::setFov(double fovy)
 	//cout<<tan(PI/180 * (fovy) / 2.0)<<endl;
 }
 
-void Camera::setAspect(double aspect){Aspect = aspect;}
-void Camera::setAspect(int x, int y){Aspect = (double)x / y;}
 
 float Camera::get_tan_fovY(){return tan_fovY;}
 float Camera::get_tan_fovX(){return tan_fovX;}

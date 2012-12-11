@@ -19,11 +19,13 @@
 
 
 
+
 class Tri
 {
 	public:
 		//Tri();
 		Tri(vec3 p1, vec3 p2, vec3 p3){vtx1=p1; vtx2=p2; vtx3=p3; color=vec3(1,1,1);}
+		Tri(vec3 p1, vec3 p2, vec3 p3, vec3 n){vtx1=p1; vtx2=p2; vtx3=p3; normal = n; color=vec3(1,1,1);}
 		//Tri(vec3 camera);
 		~Tri(){};
 
@@ -38,8 +40,6 @@ class Tri
 		vec3 vtx3;
 		vec3 color;
 		vec3 normal;
-
-
 
 };
 
@@ -114,7 +114,7 @@ inline vec3 Tri::Intersection(Ray ray)
 		return ray.getRayOrigin(); // no hit on object. return the camera position.
 	}
 
-	//return ray.getRayOrigin();
+	return ray.getRayOrigin();
 }
 
 

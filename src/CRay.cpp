@@ -27,19 +27,10 @@
 #include "Geometry/CRayGeo.h"
 //#include "Libraries/CRayLibs.h"
 #include "Cameras/Camera.h"
+#include "Parsers/readOBJ.h"
 
 using namespace std;
 using namespace Magick;
-
-
-void UVColorTest(Image &image, int x,int y)
-{
-	double newX = (x+0.0001)/50*MaxRGB;
-	double newY = (y+0.0001)/50*MaxRGB;
-	image.pixelColor(x,y,Color(newX,newY,0,1));
-	//cout<<"x:"<<x<<"  y: "<<y<<"  Color:("<<newX/MaxRGB<<","<<newY/MaxRGB<<","<<0/MaxRGB<<","<<1/MaxRGB<<")"<<endl;
-}
-
 
 Ray ComputeCameraRay(Ray &ray, Camera &cam, int x, int y) {
   const float width = cam.getImgResX();  // pixels across
@@ -49,28 +40,37 @@ Ray ComputeCameraRay(Ray &ray, Camera &cam, int x, int y) {
 	vec3 up = cam.getUp();
 	vec3 view_direction = cam.getViewDirection();
 	vec3 camera_position = cam.getPosition();
+	float aspectRatio = cam.getAspect();
 	vec3 r;
 
-  double normalized_i = (1-x / width) - 0.5;
+	vec3 xPixelOffset = vec3(-0.5*(1/width),0,0);
+	vec3 yPixelOffset = vec3(0,0.5*(1/height),0);
+
+  double normalized_i = (x / width) - 0.5;
   double normalized_j = (1-y / height)- 0.5;
-  vec3 image_point = rightVector*normalized_i +
-		  	  	  	  	  up*normalized_j + camera_position +view_direction;
+  vec3 image_point = rightVector*normalized_i * aspectRatio + xPixelOffset*aspectRatio +
+		  	  	  	  	  up*normalized_j+ yPixelOffset
+		  	  	  	  	  + camera_position +view_direction;
   r = image_point + camera_position;
 
+
+  	//cout << endl<<"_______________________________"<<endl<<"_______________________________"<<endl;
   	/*
-  	cout << endl<<"_______________________________"<<endl<<"_______________________________"<<endl;
   	//cout<<cam.setFov(30);
   	cout<<"X:"<<x<<" Y:"<<y<<endl;
-  	//cout<<"alpha:"<<alpha<<" beta:"<<beta<<endl;
+  	cout<<"Camera position:"<<camera_position;
+  	cout<<"Camera focusPoint:"<<cam.getCenter();
   	cout<<"rightVector:"<< rightVector;
   	cout<<"upVector:"<< up;
   	cout<<"view_direction:"<<view_direction;
-  	cout<<"Camera position:"<<camera_position;
+
  	cout << "image_Point:" << image_point<<endl;
   	r = r + cam.getPosition();
   	cout <<"RayThroughPixel " << r<<endl;
   	//------------------------------------------------------------------------------------------
-	*/
+
+  	//cout <<"RayThroughPixel " << r<<endl;
+  	 */
 
   	return Ray(cam.getPosition(), r);
 
@@ -86,14 +86,22 @@ void Intersect(Ray &ray, Tri tri)
 
 }
 
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
 
 int main(int argc,char **argv)
 {
 
-
   //Initialization Vars:
-	int ImgResX = 512;
-	int ImgResY = 512;
+	int ImgResX = 256;
+	int ImgResY = 128;
 
 	//Canvas size string, Concactenating int and strings
 	ostringstream oss;
@@ -103,10 +111,13 @@ int main(int argc,char **argv)
 	//Write to this destination
 	string filename = "/Users/christiansjostedt/Desktop/CRay_render.png";
 
+	//SceneDescription
 	Camera cam = Camera(vec3(0,0,0), vec3(0,0,10),vec3(0,1,0),ImgResX,ImgResY,90);
-	//Scene scene;
-	Tri tri = Tri( vec3(1,-0.5,10), vec3(-0.8,-0.4,10), vec3(0,0.8,10) );
-	tri.calculateNormal();
+	//Tri tri = Tri( vec3(4,4,10), vec3(-5,5,10), vec3(0,-10,10) );
+	//tri.calculateNormal();
+	//std::string path = "/Users/christiansjostedt/Desktop/Cube.obj";
+	readOBJ Cube = readOBJ("/Users/christiansjostedt/Desktop/Cube.obj");
+	Cube.generateGeo();
 
 	//Initialize DisplayDriver
 	InitializeMagick(*argv);
@@ -119,16 +130,15 @@ int main(int argc,char **argv)
 	Image image(imgSize, "black");		//Create canvas
 
 
-
+/*
 	for(int xPixel=0;xPixel<ImgResX;xPixel++){
 		for(int yPixel=0;yPixel<ImgResY;yPixel++)
 		{
-
+			//cout << "X:"<<xPixel<<" Y:"<<yPixel<<endl;
 			Ray ray = ComputeCameraRay(ray, cam, xPixel, yPixel);
-			//RayThroughPixel( ray, cam, ImgResX, ImgResY, xPixel, yPixel );
 
+			//Intersect
 			Intersect(ray, tri);
-			//=Intersect(ray,scene);
 
 			if (ray.getHit()==1)
 			{image.pixelColor(xPixel,yPixel,Color(MaxRGB,MaxRGB,MaxRGB,1));}
@@ -136,13 +146,13 @@ int main(int argc,char **argv)
 			else
 			{image.pixelColor(xPixel,yPixel,Color(0,0,0,1));}
 
+			ray.setHit(0);
 			//Image[x,y] = FindColor(hit);
 
-			//UVColorTest(image, x, y);
 		}
 	}
 
-
+*/
 	//Timer end, Print Time
 	finalTime=clock()-initTime;
 	cout << endl << "Rendertime: "<< (double)finalTime / ((double)CLOCKS_PER_SEC) << " Seconds"<< endl;

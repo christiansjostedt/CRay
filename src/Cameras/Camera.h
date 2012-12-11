@@ -26,8 +26,6 @@ class Camera
 		vec3 getRightVector();
 		vec3 getViewDirection();
 
-		float getFov();
-
 		void setImgResX(int);
 		void setImgResY(int);
 		int getImgResX();
@@ -36,8 +34,12 @@ class Camera
 		void recalc();
 
 		void setFov(double);
-		void setAspect(double);
-		void setAspect(int, int);
+		float getFov(){return fov;}
+
+		void setAspect(double aspect){Aspect = aspect;}
+		void setAspect(int x, int y){Aspect = (double)x / y;}
+		float getAspect(){return Aspect;}
+
 		float get_tan_fovY();
 		float get_tan_fovX();
 

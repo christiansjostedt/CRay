@@ -131,7 +131,9 @@ src/CRay.d src/CRay.o: ../src/CRay.cpp \
   ../src/Geometry/CRayGeo.h ../src/Geometry/Polygons.h \
   ../src/Geometry/../Libraries/Ray.h ../src/Geometry/../Libraries/vec3.h \
   ../src/Geometry/../Libraries/vec3.h ../src/Cameras/Camera.h \
-  ../src/Cameras/../Libraries/vec3.h
+  ../src/Cameras/../Libraries/vec3.h ../src/Parsers/readOBJ.h \
+  ../src/Parsers/../Geometry/CRayGeo.h \
+  ../src/Parsers/../Geometry/Polygons.h
 
 /opt/local/include/ImageMagick/Magick++.h:
 
@@ -404,3 +406,9 @@ src/CRay.d src/CRay.o: ../src/CRay.cpp \
 ../src/Cameras/Camera.h:
 
 ../src/Cameras/../Libraries/vec3.h:
+
+../src/Parsers/readOBJ.h:
+
+../src/Parsers/../Geometry/CRayGeo.h:
+
+../src/Parsers/../Geometry/Polygons.h:
